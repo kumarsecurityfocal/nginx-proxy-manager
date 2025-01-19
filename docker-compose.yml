@@ -1,0 +1,30 @@
+services:
+  app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    environment:
+      DB_MYSQL_HOST: "${DB_MYSQL_HOST}"
+      DB_MYSQL_PORT: "${DB_MYSQL_PORT}"
+      DB_MYSQL_USER: "${DB_MYSQL_USER}"
+      DB_MYSQL_PASSWORD: "${DB_MYSQL_PASSWORD}"
+      DB_MYSQL_NAME: "${DB_MYSQL_NAME}"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+    volumes:
+      - ./mariadb:/var/lib/mysql
